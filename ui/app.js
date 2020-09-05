@@ -2,11 +2,30 @@ const baseUrl = 'http://localhost:3000';
 
 window.onload = async function() {
   const mymap = initializeMap();
-  getAndSetTrain(mymap)
+  getAndSetTrain(mymap);
 
-  setInterval(async () => {
-    getAndSetTrain(mymap);
-  }, 30000);
+  const sliderOpts = {
+    id: 'refresh-interval-slider',
+    orientation: 'horizontal',
+    position: 'topleft', //'topright',
+    min: 5, // seconds
+    max: 60 * 5, // 5 mins
+    value: 30, // default value
+    title: 'Interval',
+    logo: 'R',
+    size: '220px',
+  };
+  newSlider = L.control.slider(setTrainRefresh(mymap), sliderOpts).addTo(mymap);
+}
+
+function setTrainRefresh(mymap) {
+  return function(seconds) {
+    console.log('setting refresh', seconds);
+    if (window.__trainRefreshInterval) {
+      clearInterval(window.__trainRefreshInterval);
+    }
+    window.__trainRefreshInterval = setInterval(getAndSetTrain, seconds * 1000, mymap);
+  }
 }
 
 async function getAndSetTrain(mymap) {
