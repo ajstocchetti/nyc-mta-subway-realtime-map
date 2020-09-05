@@ -128,6 +128,7 @@ function getIconForEntity(entity) {
     7: icon7,
     SI: iconSI,
     FS: iconShuttle,
+    GS: iconShuttle,
     H: iconH,
   };
   if (!m[routeId]) console.log('unknown route id:', routeId);
