@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const cors = require('@koa/cors');
 const kr = require('koa-route');
-const {getAllFeeds} = require('./index.js');
+const {getAllFeeds} = require('./subway-lookup.js');
 
 const app = new Koa();
 app.use(cors());

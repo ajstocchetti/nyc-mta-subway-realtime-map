@@ -1,6 +1,5 @@
 require('dotenv').config();
 const axios = require('axios');
-// const gtfs = require('./gtfs-realtime.js');
 const ProtoBuf = require('protobufjs');
 const gtfs = ProtoBuf.loadSync('./gtfs-proto/nyct-subway.proto').nested;
 const {stops} = require('./static-data');
