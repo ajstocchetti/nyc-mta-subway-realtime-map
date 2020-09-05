@@ -33,6 +33,11 @@ function lookupPositions() {
 function addTrainsToMap(mymap) {
   return function(trains) {
     trains.forEach((train) => {
+      if (!train.stopData) {
+        console.log('no stop data');
+        console.log(train);
+        return;
+      }
       const {stop_lat, stop_lon} = train.stopData;
       const options = {};
       const icon = getIconForEntity(train);
@@ -45,54 +50,46 @@ function addTrainsToMap(mymap) {
 
 
 function initializeMap() {
-  var mymap = L.map('mapid').setView([40.730610, -73.935242], 12);
+  const mymap = L.map('mapid').setView([40.730610, -73.935242], 11);
 
-  var Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+  // OpenMap Free Tiles: http://leaflet-extras.github.io/leaflet-providers/preview/index.html
+  const Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
     maxZoom: 20,
     attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
   });
   Stadia_AlidadeSmooth.addTo(mymap);
 
-  // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    //   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    //   maxZoom: 18,
-    //   id: 'mapbox/streets-v11',
-    //   tileSize: 512,
-    //   zoomOffset: -1,
-    //   accessToken: 'your.mapbox.access.token'
-    // }).addTo(mymap);
+  // L.tileLayer('/universe.jpg', {
+  //   attribution: 'The Universe: https://astronomy.com',
+  //   tms: true
+  // }).addTo(mymap);
+
+
   return mymap;
 }
 
 
 const MtaTrainIcon = L.Icon.extend({
-    options: {
-        // iconSize:     [25, 25], // actual size of SVGs
-        iconSize:     [15, 15],
-
-        // shadowUrl: 'leaf-shadow.png',
-        // shadowSize:   [50, 64],
-        // iconAnchor:   [22, 94],
-        // shadowAnchor: [4, 62],
-        // popupAnchor:  [-3, -76]
-    }
+  options: {
+    iconSize: [15, 15],
+  }
 });
-const iconUrl = line => `/logos/${line}.svg`;
-const iconA = new MtaTrainIcon({iconUrl: iconUrl('A') });
-const iconB = new MtaTrainIcon({iconUrl: iconUrl('B') });
-const iconC = new MtaTrainIcon({iconUrl: iconUrl('C') });
-const iconD = new MtaTrainIcon({iconUrl: iconUrl('D') });
-const iconE = new MtaTrainIcon({iconUrl: iconUrl('E') });
-const iconF = new MtaTrainIcon({iconUrl: iconUrl('F') });
-const iconG = new MtaTrainIcon({iconUrl: iconUrl('G') });
-const iconJ = new MtaTrainIcon({iconUrl: iconUrl('J') });
-const iconL = new MtaTrainIcon({iconUrl: iconUrl('L') });
-const iconM = new MtaTrainIcon({iconUrl: iconUrl('M') });
-const iconN = new MtaTrainIcon({iconUrl: iconUrl('N') });
-const iconQ = new MtaTrainIcon({iconUrl: iconUrl('Q') });
-const iconR = new MtaTrainIcon({iconUrl: iconUrl('R') });
-const iconW = new MtaTrainIcon({iconUrl: iconUrl('W') });
-const iconZ = new MtaTrainIcon({iconUrl: iconUrl('Z') });
+const iconUrl = line => `/subway-bullets/${line}.svg`;
+const iconA = new MtaTrainIcon({iconUrl: iconUrl('a') });
+const iconB = new MtaTrainIcon({iconUrl: iconUrl('b') });
+const iconC = new MtaTrainIcon({iconUrl: iconUrl('c') });
+const iconD = new MtaTrainIcon({iconUrl: iconUrl('d') });
+const iconE = new MtaTrainIcon({iconUrl: iconUrl('e') });
+const iconF = new MtaTrainIcon({iconUrl: iconUrl('f') });
+const iconG = new MtaTrainIcon({iconUrl: iconUrl('g') });
+const iconJ = new MtaTrainIcon({iconUrl: iconUrl('j') });
+const iconL = new MtaTrainIcon({iconUrl: iconUrl('l') });
+const iconM = new MtaTrainIcon({iconUrl: iconUrl('m') });
+const iconN = new MtaTrainIcon({iconUrl: iconUrl('n') });
+const iconQ = new MtaTrainIcon({iconUrl: iconUrl('q') });
+const iconR = new MtaTrainIcon({iconUrl: iconUrl('r') });
+const iconW = new MtaTrainIcon({iconUrl: iconUrl('w') });
+const iconZ = new MtaTrainIcon({iconUrl: iconUrl('z') });
 const icon1 = new MtaTrainIcon({iconUrl: iconUrl('1') });
 const icon2 = new MtaTrainIcon({iconUrl: iconUrl('2') });
 const icon3 = new MtaTrainIcon({iconUrl: iconUrl('3') });
@@ -100,8 +97,10 @@ const icon4 = new MtaTrainIcon({iconUrl: iconUrl('4') });
 const icon5 = new MtaTrainIcon({iconUrl: iconUrl('5') });
 const icon6 = new MtaTrainIcon({iconUrl: iconUrl('6') });
 const icon7 = new MtaTrainIcon({iconUrl: iconUrl('7') });
-const iconSI = new MtaTrainIcon({iconUrl: iconUrl('SI') });
-const iconUnknown = new MtaTrainIcon({iconUrl: '/logos/unknown.png' });
+const iconSI = new MtaTrainIcon({iconUrl: iconUrl('sir') });
+const iconShuttle = new MtaTrainIcon({iconUrl: iconUrl('s') });
+const iconH = new MtaTrainIcon({iconUrl: iconUrl('h') });
+const iconUnknown = new MtaTrainIcon({iconUrl: '/unknown-line.png' });
 function getIconForEntity(entity) {
   const routeId = entity.vehicle.trip.routeId;
   const m = {
@@ -128,6 +127,8 @@ function getIconForEntity(entity) {
     6: icon6,
     7: icon7,
     SI: iconSI,
+    FS: iconShuttle,
+    H: iconH,
   };
   if (!m[routeId]) console.log('unknown route id:', routeId);
   return m[routeId] || iconUnknown;
