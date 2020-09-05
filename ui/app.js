@@ -2,6 +2,14 @@ const baseUrl = 'http://localhost:3000';
 
 window.onload = async function() {
   const mymap = initializeMap();
+  getAndSetTrain(mymap)
+
+  setInterval(async () => {
+    getAndSetTrain(mymap);
+  }, 30000);
+}
+
+async function getAndSetTrain(mymap) {
   const trains = await lookupPositions();
   addTrainsToMap(mymap)(trains);
 }
@@ -30,22 +38,38 @@ function lookupPositions() {
   });
 }
 
-function addTrainsToMap(mymap) {
-  return function(trains) {
-    trains.forEach((train) => {
-      if (!train.stopData) {
-        console.log('no stop data');
-        console.log(train);
-        return;
-      }
-      const {stop_lat, stop_lon} = train.stopData;
-      const options = {};
-      const icon = getIconForEntity(train);
-      if (icon) options.icon = icon;
+async function pause(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  });
+}
 
-      const marker = L.marker([stop_lat, stop_lon], options).addTo(mymap);
-    });
+function addTrainsToMap(mymap) {
+  return async function(trains) {
+    if (window.__trainsLayer) {
+      mymap.removeLayer(window.__trainsLayer);
+      delete window.__trainsLayer;
+    }
+
+    window.__trainsLayer = L.layerGroup();
+    window.__trainsLayer.addTo(mymap);
+    trains.forEach((train) => addTrainToLayer(train));
   }
+}
+
+function addTrainToLayer(train) {
+  if (!train.stopData) {
+    console.log('no stop data');
+    console.log(train);
+    return;
+  }
+  const {stop_lat, stop_lon} = train.stopData;
+  const options = {
+    riseOnHover: true,
+    icon: getIconForEntity(train),
+  };
+  const marker = L.marker([stop_lat, stop_lon], options);
+  marker.addTo(window.__trainsLayer);
 }
 
 
