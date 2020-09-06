@@ -20,7 +20,6 @@ window.onload = async function() {
 
 function setTrainRefresh(mymap) {
   return function(seconds) {
-    console.log('setting refresh', seconds);
     if (window.__trainRefreshInterval) {
       clearInterval(window.__trainRefreshInterval);
     }
@@ -143,37 +142,92 @@ const icon7 = new MtaTrainIcon({iconUrl: iconUrl('7') });
 const iconSI = new MtaTrainIcon({iconUrl: iconUrl('sir') });
 const iconShuttle = new MtaTrainIcon({iconUrl: iconUrl('s') });
 const iconH = new MtaTrainIcon({iconUrl: iconUrl('h') });
+
+const ZooIcon = L.Icon.extend({
+  options: {
+    iconSize: [25, 25],
+  }
+});
+const getZooIcon = animal => new ZooIcon({ iconUrl: `/zoo-icons/${animal}.svg`});
+const icon_beaver = getZooIcon('beaver');
+const icon_bison = getZooIcon('bison');
+const icon_chameleon = getZooIcon('chameleon');
+const icon_cheetah = getZooIcon('cheetah');
+const icon_chimpanzee = getZooIcon('chimpanzee');
+const icon_dolphin = getZooIcon('dolphin');
+const icon_elephant = getZooIcon('elephant');
+const icon_ferret = getZooIcon('ferret');
+const icon_flamingos = getZooIcon('flamingos');
+const icon_giraffe = getZooIcon('giraffe');
+const icon_gorilla = getZooIcon('gorilla');
+const icon_hedgehog = getZooIcon('hedgehog');
+const icon_hippopotamus = getZooIcon('hippopotamus');
+const icon_hyena = getZooIcon('hyena');
+const icon_kangaroo = getZooIcon('kangaroo');
+const icon_kiwi = getZooIcon('kiwi');
+const icon_koala = getZooIcon('koala');
+const icon_llama = getZooIcon('llama');
+const icon_meerkat = getZooIcon('meerkat');
+const icon_ostrich = getZooIcon('ostrich');
+const icon_parrot = getZooIcon('parrot');
+const icon_penguin = getZooIcon('penguin');
+const icon_platypus = getZooIcon('platypus');
+const icon_porcupine = getZooIcon('porcupine');
+const icon_raccoon = getZooIcon('raccoon');
+const icon_sloth = getZooIcon('sloth');
+const icon_snake = getZooIcon('snake');
+const icon_boar = getZooIcon('wild-boar');
+
+// const icon_antelope = getZooIcon('antelope');
+// const icon_baboon = getZooIcon('baboon');
+// const icon_bear = getZooIcon('bear');
+// const icon_butterfly = getZooIcon('butterfly');
+// const icon_deer = getZooIcon('deer');
+// const icon_horse = getZooIcon('horse');
+// const icon_lion = getZooIcon('lion');
+// const icon_rabbit = getZooIcon('rabbit');
+// const icon_sealion = getZooIcon('sea-lion');
+// const icon_squirrel = getZooIcon('squirrel');
+// const icon_turtle = getZooIcon('turtle');
+// const icon_walrus = getZooIcon('walrus');
+// const icon_wombat = getZooIcon('wombat');
+
+
 const iconUnknown = new MtaTrainIcon({iconUrl: '/unknown-line.png' });
 function getIconForEntity(entity) {
   const routeId = entity.vehicle.trip.routeId;
   const m = {
-    A: iconA,
-    B: iconB,
-    C: iconC,
-    D: iconD,
-    E: iconE,
-    F: iconF,
-    G: iconG,
-    J: iconJ,
-    L: iconL,
-    M: iconM,
-    N: iconN,
-    Q: iconQ,
-    R: iconR,
-    W: iconW,
-    Z: iconZ,
-    1: icon1,
-    2: icon2,
-    3: icon3,
-    4: icon4,
-    5: icon5,
-    6: icon6,
-    7: icon7,
-    SI: iconSI,
-    FS: iconShuttle,
-    GS: iconShuttle,
-    H: iconH,
+    A: [ iconA, icon_beaver ],
+    B: [ iconB, icon_gorilla ],
+    C: [ iconC, icon_chameleon ],
+    D: [ iconD, icon_hippopotamus ],
+    E: [ iconE, icon_platypus ],
+    F: [ iconF, icon_parrot ],
+    G: [ iconG, icon_flamingos ],
+    J: [ iconJ, icon_porcupine ],
+    L: [ iconL, icon_bison ],
+    M: [ iconM, icon_hedgehog ],
+    N: [ iconN, icon_sloth ],
+    Q: [ iconQ, icon_elephant ],
+    R: [ iconR, icon_ostrich ],
+    W: [ iconW, icon_meerkat ],
+    Z: [ iconZ, icon_hyena ],
+    1: [ icon1, icon_kiwi ],
+    2: [ icon2, icon_ferret ],
+    3: [ icon3, icon_chimpanzee ],
+    4: [ icon4, icon_dolphin ],
+    5: [ icon5, icon_penguin ],
+    6: [ icon6, icon_giraffe ],
+    7: [ icon7, icon_cheetah ],
+    SI: [ iconSI, icon_llama ],
+    FS: [ iconShuttle, icon_koala ],
+    GS: [ iconShuttle, icon_raccoon ],
+    H: [ iconH, icon_kangaroo ],
   };
-  if (!m[routeId]) console.log('unknown route id:', routeId);
-  return m[routeId] || iconUnknown;
+  const iconList = m[routeId];
+  if (!iconList) {
+    console.log('unknown route id:', routeId);
+    return iconUnknown;
+  }
+  else return iconList[0];
 }
